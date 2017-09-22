@@ -83,7 +83,7 @@ void CharacterDemo::Start()
     SubscribeToEvents();
 
     // Set the mouse mode to use in the sample
-    Sample::InitMouseMode(MM_RELATIVE);
+    // Sample::InitMouseMode(MM_RELATIVE);
 }
 
 void CharacterDemo::CreateScene()
@@ -190,7 +190,7 @@ void CharacterDemo::CreateCharacter()
     // spin node
     Node* adjustNode = objectNode->CreateChild("AdjNode");
     adjustNode->SetRotation( Quaternion(180, Vector3(0,1,0) ) );
-    
+
     // Create the rendering component + animation controller
     AnimatedModel* object = adjustNode->CreateComponent<AnimatedModel>();
     object->SetModel(cache->GetResource<Model>("Models/Mutant/Mutant.mdl"));
@@ -252,6 +252,8 @@ void CharacterDemo::SubscribeToEvents()
 
     // Subscribe to PostUpdate event for updating the camera position after physics simulation
     SubscribeToEvent(E_POSTUPDATE, URHO3D_HANDLER(CharacterDemo, HandlePostUpdate));
+
+    SubscribeToEvent(E_INPUTFOCUS, URHO3D_HANDLER(CharacterDemo, HandleInputFocus));
 
     // Unsubscribe the SceneUpdate event from base class as the camera node is being controlled in HandlePostUpdate() in this sample
     UnsubscribeFromEvent(E_SCENEUPDATE);
@@ -339,6 +341,12 @@ void CharacterDemo::HandleUpdate(StringHash eventType, VariantMap& eventData)
             }
         }
     }
+}
+
+void CharacterDemo::HandleInputFocus(StringHash eventType, VariantMap& eventData)
+{
+    // not hide mouse cursor since it's inconvienient for step debugging
+    GetSubsystem<Input>()->SetMouseVisible(true);
 }
 
 void CharacterDemo::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
